@@ -63,40 +63,21 @@ int stringCmp(const void * a,const void *b)
     return strcmp((char *)a,(char *)b) ;
     //return strcmp((char *)b,(char *)a) ;
 }
-
-char* genRandomString(int length)
-{
-    int flag, i;
-    char* string;
-    srand(time(NULL));
-    if ((string = (char*) malloc(length)) == NULL )
-    {
-        printf("alloc failed!flag:14\n");
-        return NULL ;
+int stringComparePointer(const void *arg1, const void *arg2) {
+    char *a = *(char**)arg1;
+    char *b = *(char**)arg2;
+    int result = strcmp(a, b);
+    if (result > 0) {
+        return 1;
     }
-
-    for (i = 0; i < length - 1; i++)
-    {
-        flag = rand() % 3;
-        switch (flag)
-        {
-            case 0:
-                string[i] = 'A' + rand() % 26;
-                break;
-            case 1:
-                string[i] = 'a' + rand() % 26;
-                break;
-            case 2:
-                string[i] = '0' + rand() % 10;
-                break;
-            default:
-                string[i] = 'x';
-                break;
-        }
+    else if (result < 0) {
+        return -1;
     }
-    string[length - 1] = '\0';
-    return string;
+    else {
+        return 0;
+    }
 }
+
 char *random_uuid( char buf[37] )
 {
     const char *c = "89ab";
@@ -144,7 +125,7 @@ char *random_uuid( char buf[37] )
 
 int stringSort()
 {
-#define SIZE 20
+    #define SIZE 20
     char s[SIZE][37];
     int i;
     for(i=0;i<SIZE;i++){
@@ -158,6 +139,25 @@ int stringSort()
     printf("-------------string sorted-------------\n");
     qsort(s,SIZE,sizeof(s[0]),stringCmp);
     for(i =0;i<SIZE;i++)
+    {
+        printf("%s\n",s[i]);
+    }
+    return 0;
+}
+int stringSortPointer()
+{
+
+    int i;
+	char *s[10]={"I","love","c","c++","python","java","php","OC","programming","language"};
+
+    printf("-------------string unsorted-------------\n");
+    for(i=0;i<10;i++)
+    {
+        printf("%s\n",s[i]);
+    }
+    printf("-------------string sorted-------------\n");
+    qsort(s, sizeof(s)/sizeof(s[0]), sizeof(char *), stringComparePointer);
+    for(i =0;i<10;i++)
     {
         printf("%s\n",s[i]);
     }
@@ -238,6 +238,8 @@ int main()
 
     //string sort
     stringSort();
+    putchar('\n');
+    stringSortPointer();
     putchar('\n');
 
     //struct sort
